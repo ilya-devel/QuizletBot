@@ -1,3 +1,5 @@
+import time
+
 import telebot
 import characters
 from os.path import getsize, isfile
@@ -30,7 +32,7 @@ class User:
         self.status = {
             'is_passing': False,
             'is_passed': False,
-            'current_index': -1,
+            'current_index': int(),
             'answers': []
         }
 
@@ -136,6 +138,8 @@ db = DataBase()
 @bot.message_handler(commands=['start'])
 def start(message):
     user = db.get_user(message.chat.id)
+    print(user.chat_id)
+    print(db.users)
     # if user.status['is_passed']:
     #     bot.send_message(message.chat.id, "Вы уже прошли эту викторину. Второй раз пройти нельзя 😥")
     #     return
@@ -159,7 +163,9 @@ def answered(query):
 
     post = get_answered_message(user)
     if post is not None:
-        bot.edit_message_text(post['text'], query.message.chat.id, query.message.id, reply_markup=post['keyboard'])
+        print(f'send message {query.message.chat.id}')
+        # bot.edit_message_text(post['text'], query.message.chat.id, query.message.id, reply_markup=post['keyboard'])
+        bot.send_message(query.message.chat.id, post['text'], reply_markup=post['keyboard'])
 
 
 @bot.callback_query_handler(func=lambda query: query.data == '?next')
@@ -171,13 +177,16 @@ def next(query):
 
     post = get_question_message(user)
     if post is not None:
-        bot.edit_message_text(post['text'], query.message.chat.id, query.message.id, reply_markup=post['keyboard'])
+        # bot.edit_message_text(post['text'], query.message.chat.id, query.message.id, reply_markup=post['keyboard'])
+        bot.send_message(query.message.chat.id, post['text'], reply_markup=post['keyboard'])
 
 
 def get_question_message(user: User):
     if user.status['current_index'] == db.questions_count:
         result = user.get_character()
-        db.set_user(user.chat_id, is_passed=True, is_passing=False)
+        # db.set_user(user.chat_id, is_passed=True, is_passing=False)
+        db.users.remove(user)
+        print(db.users)
         return {'text': result, 'keyboard': None}
     question = db.get_question(user.status['current_index'])
     if question is None:
@@ -195,8 +204,10 @@ def get_question_message(user: User):
 
 def get_answered_message(user: User):
     question = db.get_question(user.status['current_index'])
-    text = f"Вопрос №{user.status['current_index'] + 1}\n\n{question}\n" \
-           f"Ваш ответ: {'Да' if user.status['answers'][user.status['current_index']] == True else 'Нет'}"
+    # text = f"Вопрос №{user.status['current_index'] + 1}\n\n{question}\n" \
+    #        f"Ваш ответ: {'Да' if user.status['answers'][user.status['current_index']] == True else 'Нет'}"
+    text = f"Ваш ответ: {'Да' if user.status['answers'][user.status['current_index']] == True else 'Нет'}"
+    # time.sleep(1)
 
     keyboard = telebot.types.InlineKeyboardMarkup()
     keyboard.row(telebot.types.InlineKeyboardButton('Далее', callback_data='?next'))
