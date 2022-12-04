@@ -65,14 +65,14 @@ def get_question_message(user: User):
     }
 
 
-def get_answered_message(user: User):
-    text = f"Ваш ответ: {'Да' if user.status['answers'][user.status['current_index']] == True else 'Нет'}"
-    keyboard = telebot.types.ReplyKeyboardMarkup()
-    keyboard.add(telebot.types.InlineKeyboardButton('Далее', callback_data='?next'))
-    return {
-        'text': text,
-        'keyboard': keyboard
-    }
+# def get_answered_message(user: User):
+#     text = f"Ваш ответ: {'Да' if user.status['answers'][user.status['current_index']] == True else 'Нет'}"
+#     keyboard = telebot.types.ReplyKeyboardMarkup()
+#     keyboard.add(telebot.types.InlineKeyboardButton('Далее', callback_data='?next'))
+#     return {
+#         'text': text,
+#         'keyboard': keyboard
+#     }
 
 
 bot.polling()
