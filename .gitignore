@@ -4,3 +4,4 @@ venv
 
 # Files
 *.token
+/link.info
