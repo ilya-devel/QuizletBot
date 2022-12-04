@@ -88,7 +88,7 @@ class DataBase:
         self.users = users
         self.questions = []
         with open('question_list.txt', 'r') as f:
-            self.questions = [x.strip() for x in f.readlines()][:3]
+            self.questions = [x.strip() for x in f.readlines()]
         self.questions_count = len(self.questions)
 
     def get_user(self, chat_id):

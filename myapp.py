@@ -27,7 +27,7 @@ def start(message):
         bot.send_message(message.chat.id, post['text'], reply_markup=post['keyboard'])
 
 
-@bot.message_handler(func=lambda msg: msg.text == 'Да' or 'Нет')
+@bot.message_handler(func=lambda msg: msg.text == 'Да' or msg.text == 'Нет')
 def answered(msg):
     user = db.get_user(msg.chat.id)
     # print(user.status['answers'])
